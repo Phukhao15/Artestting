@@ -7,18 +7,20 @@
     <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
+    <!-- A-Frame Scene -->
     <a-scene embedded arjs>
         <!-- โหลดโมเดล -->
         <a-assets>
+            <!-- เปลี่ยน URL ให้ตรงกับไฟล์โมเดลของคุณ -->
             <a-asset-item id="model" src="https://phukhao15.github.io/Artestting/model.glb"></a-asset-item>
         </a-assets>
 
-        <!-- โมเดล -->
+        <!-- แสดงโมเดล -->
         <a-entity
             gltf-model="#model"
-            position="0 0 -3"
-            scale="0.5 0.5 0.5"
-            rotation="0 45 0">
+            position="0 0 -3"   <!-- ตำแหน่ง: ห่างจากกล้อง 3 เมตร -->
+            scale="0.5 0.5 0.5" <!-- ขนาด -->
+            rotation="0 45 0"> <!-- หมุน -->
         </a-entity>
 
         <!-- กล้อง -->
