@@ -15,13 +15,15 @@
             <a-asset-item id="model" src="https://phukhao15.github.io/Artestting/model.glb"></a-asset-item>
         </a-assets>
 
-        <!-- แสดงโมเดล -->
-        <a-entity
-            gltf-model="#model"
-            position="0 0 -3"   <!-- ตำแหน่ง: ห่างจากกล้อง 3 เมตร -->
-            scale="0.5 0.5 0.5" <!-- ขนาด -->
-            rotation="0 45 0"> <!-- หมุน -->
-        </a-entity>
+        <!-- ใช้ Marker -->
+        <a-marker preset="hiro">
+            <a-entity
+                gltf-model="#model"
+                position="0 0 0"   <!-- ตำแหน่งของโมเดล -->
+                scale="0.5 0.5 0.5" <!-- ขนาด -->
+                rotation="0 45 0"> <!-- หมุน -->
+            </a-entity>
+        </a-marker>
 
         <!-- กล้อง -->
         <a-entity camera></a-entity>
