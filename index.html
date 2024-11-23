@@ -34,11 +34,11 @@
     </style>
 
     <!-- เริ่ม A-Frame Scene -->
-    <a-scene embedded arjs="sourceType: webcam;">
+    <a-scene embedded arjs>
         <!-- Marker (Hiro) -->
         <a-marker preset="hiro">
             <a-entity 
-                gltf-model="https://raw.githubusercontent.com/Phukhao15/Artestting/main/map.glb" 
+                gltf-model="./map.glb"  <!-- เปลี่ยนเป็น path สัมพัทธ์ -->
                 position="0 0 0" 
                 scale="0.5 0.5 0.5" 
                 rotation="0 45 0">
@@ -50,15 +50,14 @@
     </a-scene>
 
     <script>
-        // ตรวจสอบการอนุญาตให้เข้าถึงกล้อง
+        // ตรวจสอบการเข้าถึงกล้อง
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
-                // ซ่อนหน้าจอโหลดเมื่อกล้องทำงานได้
                 document.querySelector('.arjs-loader').style.display = 'none';
+                console.log("กล้องพร้อมใช้งาน");
             })
             .catch(function(err) {
-                // แสดงข้อความหากไม่ได้รับอนุญาตให้เข้าถึงกล้อง
-                console.log("กล้องไม่ได้รับอนุญาต: ", err);
+                console.error("กล้องไม่ได้รับอนุญาต: ", err);
                 alert("กรุณาอนุญาตให้เข้าถึงกล้อง");
             });
     </script>
