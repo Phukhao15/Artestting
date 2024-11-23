@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR.js with Hiro Marker</title>
+    <title>AR.js with Sample Model</title>
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';">
     
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -31,15 +31,11 @@
     </style>
 
     <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
-        <a-assets>
-            <a-asset-item id="model" src="https://raw.githubusercontent.com/Phukhao15/Artestting/main/model.glb"></a-asset-item>
-        </a-assets>
-        
         <a-marker type="pattern" preset="hiro">
             <a-entity
-                gltf-model="#model"
-                position="0 0 0"
-                scale="0.1 0.1 0.1"
+                gltf-model="https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+                position="0 1 0"
+                scale="0.5 0.5 0.5"
                 rotation="0 0 0">
             </a-entity>
         </a-marker>
