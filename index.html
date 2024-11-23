@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AR.js with Hiro Marker</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' blob:; img-src 'self' data: blob: 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob: 'unsafe-inline'; style-src * 'unsafe-inline'; frame-src *;">
     
     <!-- A-Frame -->
-    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <!-- AR.js -->
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.0.0/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-    <!-- Loading screen -->
+    <!-- หน้าจอโหลด -->
     <div class="arjs-loader">
         <div>Loading, please wait...</div>
     </div>
@@ -33,9 +33,9 @@
         }
     </style>
 
-    <!-- A-Frame scene -->
-    <a-scene embedded arjs>
-        <!-- Hiro Marker -->
+    <!-- เริ่ม A-Frame Scene -->
+    <a-scene embedded arjs="sourceType: webcam;">
+        <!-- Marker (Hiro) -->
         <a-marker preset="hiro">
             <a-entity 
                 gltf-model="https://raw.githubusercontent.com/Phukhao15/Artestting/main/map.glb" 
@@ -45,24 +45,21 @@
             </a-entity>
         </a-marker>
 
-        <!-- Camera -->
+        <!-- กล้อง -->
         <a-entity camera></a-entity>
     </a-scene>
 
     <script>
+        // ตรวจสอบการอนุญาตให้เข้าถึงกล้อง
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
-                setTimeout(() => {
-                    document.querySelector('.arjs-loader').style.display = 'none';
-                }, 500);  // Add delay before hiding loader
+                // ซ่อนหน้าจอโหลดเมื่อกล้องทำงานได้
+                document.querySelector('.arjs-loader').style.display = 'none';
             })
             .catch(function(err) {
+                // แสดงข้อความหากไม่ได้รับอนุญาตให้เข้าถึงกล้อง
                 console.log("กล้องไม่ได้รับอนุญาต: ", err);
-                if (err.name === "NotReadableError") {
-                    alert("กล้องถูกใช้งานอยู่ในแอปพลิเคชันอื่น โปรดลองใหม่อีกครั้ง");
-                } else {
-                    alert("กรุณาอนุญาตให้เข้าถึงกล้อง");
-                }
+                alert("กรุณาอนุญาตให้เข้าถึงกล้อง");
             });
     </script>
 </body>
