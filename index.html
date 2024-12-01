@@ -1,103 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Map Viewer</title>
+    <title>AR.js with Sample Model</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src ; style-src 'unsafe-inline';">
 
-    <!-- ใช้ CDN ที่เสถียร -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <div class="arjs-loader">
+        <div>Loading, please wait...</div>
+    </div>
 
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .message {
-            position: fixed;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-family: Arial, sans-serif;
-            z-index: 999;
-            text-align: center;
-        }
-
-        #stabilizationMessage {
-            bottom: 20px;
+        .arjs-loader {
+            height: 100%;
             width: 100%;
-        }
-
-        #loadingMessage {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        #debugInfo {
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            font-size: 12px;
-            text-align: left;
-        }
-
-        .error {
-            background: rgba(255, 0, 0, 0.7) !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
         }
     </style>
-</head>
 
-<body>
-    <div id="loadingMessage" class="message">กำลังโหลดโมเดล...</div>
-    <div id="stabilizationMessage" class="message">กรุณาถือกล้องให้นิ่งเพื่อการแสดงผลที่ดีที่สุด</div>
-    <div id="debugInfo" class="message" style="display: none;"></div>
-
-    <a-scene embedded 
-        arjs="trackingMethod: best; 
-              sourceType: webcam; 
-              debugUIEnabled: false;
-              patternRatio: 0.75;
-              detectionMode: mono_and_matrix;
-              matrixCodeType: 3x3;
-              sourceWidth: 1280;
-              sourceHeight: 960;
-              displayWidth: 1280;
-              displayHeight: 960;" 
-        renderer="antialias: true; logarithmicDepthBuffer: true;"
-        vr-mode-ui="enabled: false"
-        loading-screen="enabled: false">
-
-        <a-assets timeout="30000">
-            <!-- เพิ่ม crossorigin และ timeout -->
-            <a-asset-item id="map-model" src="map.glb" crossorigin="anonymous"></a-asset-item>
-        </a-assets>
-
-        <a-marker preset="hiro" 
-            smooth="true" 
-            smoothCount="10" 
-            smoothTolerance="0.01" 
-            smoothThreshold="5"
-            raycaster="objects: .clickable" 
-            emitevents="true" 
-            cursor="fuse: false; rayOrigin: mouse;">
-
-            <a-entity 
-                position="0 0 0" 
-                scale="0.1 0.1 0.1" 
-                rotation="-90 0 0" 
-                gltf-model="#map-model"
-                class="clickable" 
-                animation-mixer="loop: once"
-                visible="false"
-                model-handler>
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
+        <a-marker type="pattern" preset="hiro">
+            <a-entity
+                gltf-model="https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+                position="0 1 0"
+                scale="0.5 0.5 0.5"
+                rotation="0 0 0">
             </a-entity>
         </a-marker>
 
@@ -105,123 +44,14 @@
     </a-scene>
 
     <script>
-        // Debug function
-        function updateDebugInfo(info) {
-            const debugEl = document.getElementById('debugInfo');
-            debugEl.style.display = 'block';
-            debugEl.innerHTML += info + '<br>';
-        }
-
-        // Check HTTPS
-        if (window.location.protocol !== 'https:') {
-            const loadingMsg = document.getElementById('loadingMessage');
-            loadingMsg.textContent = 'กรุณาใช้งานผ่าน HTTPS เท่านั้น';
-            loadingMsg.classList.add('error');
-            updateDebugInfo('Error: HTTPS required');
-        }
-
-        AFRAME.registerComponent('model-handler', {
-            init: function () {
-                const marker = document.querySelector('a-marker');
-                const model = this.el;
-                const loadingMessage = document.getElementById('loadingMessage');
-                const stabilizationMessage = document.getElementById('stabilizationMessage');
-                let isVisible = false;
-                let stabilityCount = 0;
-                const stabilityThreshold = 30;
-                let modelLoaded = false;
-
-                // Asset loading handlers
-                const assetSystem = document.querySelector('a-scene').systems['asset-item'];
-                assetSystem.onReady(() => {
-                    updateDebugInfo('Assets ready');
-                });
-
-                // Model loading handlers
-                model.addEventListener('model-loaded', () => {
-                    modelLoaded = true;
-                    loadingMessage.style.display = 'none';
-                    updateDebugInfo('Model loaded successfully');
-                });
-
-                model.addEventListener('model-error', (error) => {
-                    loadingMessage.textContent = 'เกิดข้อผิดพลาดในการโหลดโมเดล';
-                    loadingMessage.classList.add('error');
-                    updateDebugInfo('Model loading error: ' + error.detail.message);
-                });
-
-                // Marker handlers
-                marker.addEventListener('markerFound', () => {
-                    isVisible = true;
-                    stabilizationMessage.style.display = 'block';
-                    updateDebugInfo('Marker found');
-                });
-
-                marker.addEventListener('markerLost', () => {
-                    isVisible = false;
-                    stabilityCount = 0;
-                    stabilizationMessage.style.display = 'none';
-                    model.setAttribute('visible', false);
-                    updateDebugInfo('Marker lost');
-                });
-
-                // Stability tracking
-                let lastPosition = new THREE.Vector3();
-                let lastRotation = new THREE.Euler();
-
-                this.tick = AFRAME.utils.throttleTick(function() {
-                    if (isVisible && modelLoaded) {
-                        const currentPosition = marker.object3D.position;
-                        const currentRotation = marker.object3D.rotation;
-
-                        const positionDelta = currentPosition.distanceTo(lastPosition);
-                        const rotationDelta = Math.abs(currentRotation.z - lastRotation.z);
-
-                        if (positionDelta < 0.001 && rotationDelta < 0.001) {
-                            stabilityCount++;
-                            if (stabilityCount >= stabilityThreshold) {
-                                stabilizationMessage.style.display = 'none';
-                                model.setAttribute('visible', true);
-                            }
-                        } else {
-                            stabilityCount = Math.max(0, stabilityCount - 1);
-                            if (stabilityCount < stabilityThreshold) {
-                                model.setAttribute('visible', false);
-                                stabilizationMessage.style.display = 'block';
-                            }
-                        }
-
-                        lastPosition.copy(currentPosition);
-                        lastRotation.copy(currentRotation);
-                    }
-                }, 16);  // 60fps throttle
-            }
-        });
-
-        // Camera access check
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'environment',
-                width: { ideal: 1280 },
-                height: { ideal: 960 }
-            }
-        }).then(stream => {
-            updateDebugInfo('Camera accessed successfully');
-        }).catch(err => {
-            const loadingMsg = document.getElementById('loadingMessage');
-            loadingMsg.textContent = 'ไม่สามารถเข้าถึงกล้องได้ กรุณาอนุญาตการใช้งานกล้อง';
-            loadingMsg.classList.add('error');
-            updateDebugInfo('Camera access error: ' + err.message);
-        });
-
-        // Add reload button after timeout
-        setTimeout(() => {
-            const loadingMsg = document.getElementById('loadingMessage');
-            if (loadingMsg.style.display !== 'none') {
-                loadingMsg.innerHTML = 'การโหลดใช้เวลานานเกินไป <button onclick="window.location.reload()">ลองใหม่</button>';
-            }
-        }, 30000);
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                document.querySelector('.arjs-loader').style.display = 'none';
+            })
+            .catch(function(err) {
+                console.log("กล้องไม่ได้รับอนุญาต: ", err);
+                alert("กรุณาอนุญาตให้เข้าถึงกล้อง");
+            });
     </script>
 </body>
-
 </html>
