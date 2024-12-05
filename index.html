@@ -1,31 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR.js with Hiro Marker</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.0/aframe/build/aframe-ar.min.js"></script>
-  </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      embedded
-      arjs="sourceType: webcam;"
-      renderer="antialias: true; precision: mediump;"
-    >
-      <!-- Hiro Marker -->
-      <a-marker preset="hiro">
-        <!-- GLB Model -->
-        <a-entity
-          gltf-model="https://github.com/Phukhao15/Artestting/blob/main/map.glb"
-          scale="0.5 0.5 0.5"
-          position="0 0 0"
-          rotation="0 0 0"
-        ></a-entity>
-      </a-marker>
 
-      <!-- Camera -->
-      <a-entity camera></a-entity>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js with A-Frame Example</title>
+    <!-- เพิ่มสคริปต์ A-Frame และ AR.js -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.js"></script>
+    <style>
+        /* ให้หน้าจอเต็มขนาด */
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- A-Frame Scene ที่ใช้สำหรับ AR.js -->
+    <a-scene embedded arjs>
+        <!-- เพิ่มแสงให้กับฉาก -->
+        <a-light type="directional" position="0 2 2" intensity="1.5" color="#ffffff"></a-light>
+        <a-light type="ambient" intensity="0.5" color="#ffffff"></a-light>
+
+        <!-- Hiro Marker -->
+        <a-marker preset="hiro">
+            <!-- โมเดล GLB -->
+            <a-entity 
+                gltf-model="map.glb" 
+                scale="0.1 0.1 0.1" 
+                position="0 0 0" 
+                rotation="0 0 0">
+            </a-entity>
+        </a-marker>
+        
+        <!-- กล้อง AR -->
+        <a-entity camera></a-entity>
     </a-scene>
-  </body>
+</body>
+
 </html>
